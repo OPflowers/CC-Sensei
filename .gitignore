@@ -2,3 +2,8 @@
 *.mkv
 .idea/
 *.exe
+.venv/
+ffmpeg.exe
+ffmpeg-git-amd64-static.tar.xz
+ffmpeg-git-20220910-amd64-static/
+vmaf/
