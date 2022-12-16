@@ -1,0 +1,9 @@
+Category,Video Number,Video Description,Survey A,Survey B,Survey C,Survey D,Survey E,Survey F,Sum,Delay Times
+Sports,08e1,Karate,5,3,0,4,2,1,15,2
+Sports,4b69,Dirt Bikes,4,0,2,3,5,1,15,6
+Sports,2c06,Discus,1,2,5,0,3,4,15,10
+Gaming,6658,Pig,3,5,2,1,4,0,15,14
+Gaming,6403,Racecar,0,5,3,1,4,2,15,18
+Animation,06a6,Asteroid,1,4,2,5,3,0,15,-1
+Animation,2abf,House,3,4,1,0,2,5,15,-1
+Animation,1a6d,Rails,4,5,1,3,0,2,15,-1
