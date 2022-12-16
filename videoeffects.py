@@ -1,4 +1,6 @@
 import sys
+import os
+import shutil
 from moviepy.editor import *
 from moviepy.video.fx.all import resize, invert_colors, freeze, supersample
 
@@ -12,6 +14,7 @@ def splice_clip(clip, time, duration):
 
 # =====================================================
 
+
 def insert_buffer(clip, time, duration):
     clip = freeze(clip, t=time, freeze_duration=duration)
     return clip
@@ -23,7 +26,7 @@ def create_many_buffers(filename, count, duration, **kwargs):
     video = VideoFileClip(filename)
     length = video.duration
     chunk_size = (float(length) / count)
-    start_times = [(chunk_size * i + chunk_size/2) for i in range(count)]
+    start_times = [(chunk_size * i + chunk_size / 2) for i in range(count)]
 
     for i, s in enumerate(start_times):
         result = insert_buffer(video, s, duration)
@@ -79,5 +82,39 @@ def create_many_resolution_drops(filename, count, duration, old_resolution, new_
 
 # =====================================================
 
+
+def set_video_bitrates(filename, duration, bitrates, write_path):
+
+    temp_folder_path = "./Augmented Videos/temp write folder/"
+    if os.path.exists(write_path):
+        if os.path.getsize(write_path) < 1000:
+            os.remove(write_path)
+        else:
+            return
+    if os.path.exists(temp_folder_path):
+        shutil.rmtree(temp_folder_path)
+
+    os.mkdir(temp_folder_path)
+
+    video = VideoFileClip(filename)
+    length = video.duration
+    time = 0
+    chunks = []
+    bitrate_index = 0
+    while time < length:
+        chunk = video.subclip(time, time + duration)
+        chunk.write_videofile(filename=temp_folder_path + str(bitrate_index) + "temp.mp4", bitrate=str(bitrates[bitrate_index]) + "K")
+        # print("??")
+        chunk = VideoFileClip(temp_folder_path + str(bitrate_index) + "temp.mp4")
+        # print("????")
+        chunks.append(chunk)
+        time += duration
+        bitrate_index += 1
+    first_half = concatenate_videoclips(chunks[:len(chunks)//2], method="compose")
+    second_half = concatenate_videoclips(chunks[len(chunks)//2:], method="compose")
+    final = concatenate_videoclips([first_half, second_half])
+
+    final.write_videofile(write_path)
+    return
 # usage example:
 # create_many_buffers("Youtube Videos/Worlds Feature Faker vs Ryu.mp4", 5, 1)
