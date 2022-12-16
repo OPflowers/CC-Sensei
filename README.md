@@ -8,6 +8,9 @@ For our plots in paper, run (with an editor that can open matplotlib graphs like
 
 If you are accessing code from the zipped files, they should contain more files (like videos and such) due to files ignored by the .gitignore on GitHub.
 
+The videos for the project (original and augmented) can be found in this Google Drive:
+- https://drive.google.com/drive/u/0/folders/1vSZHNcQ0cvHzoAam_HV_3380Caa7WdRE
+
 In this project, we test the following in SENSEI's methodology:
 - SENSEI's weighted QoE modeling improvements, comparing to KSQI, P.1203
     - https://github.com/zduanmu/ksqi
