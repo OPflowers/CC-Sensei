@@ -1,5 +1,7 @@
 CS 6111 - Semester Project: SENSEI - Aligning Video Streaming Quality with Dynamic User Sensitivity, Xu Zhang and Yiyang Ou
 
+* We found a bug in our final presentation where the models were using the wrong set of weights. We have since fixed this for our final paper.
+
 ***
 For our plots in paper, run (with an editor that can open matplotlib graphs like PyCharm)
 - cd ksqi-master/results/
