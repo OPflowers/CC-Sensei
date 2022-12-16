@@ -260,8 +260,8 @@ def plot_video_qoe_comparisons():
 
 
 def main():
-    # plot_throughput(True)
-    # plot_individual_video_comparisons()
+    plot_throughput(True)
+    plot_individual_video_comparisons()
     plot_video_qoe_comparisons()
     return
 
