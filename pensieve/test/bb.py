@@ -3,10 +3,10 @@ import fixed_env as env
 import load_trace
 
 
-S_INFO = 6  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
+S_INFO = 7  # bit_rate, buffer_size, next_chunk_size, bandwidth_measurement(throughput and time), chunk_til_video_end
 S_LEN = 8  # take how many frames in the past
-A_DIM = 6
-VIDEO_BIT_RATE = [300,750,1200,1850,2850,4300]  # Kbps
+A_DIM = 5
+VIDEO_BIT_RATE = [300,750,1200,1850,2850]  # Kbps
 M_IN_K = 1000.0
 REBUF_PENALTY = 4.3  # 1 sec rebuffering -> 3 Mbps
 SMOOTH_PENALTY = 1
@@ -15,8 +15,8 @@ RANDOM_SEED = 42
 RAND_RANGE = 1000000
 RESEVOIR = 5  # BB
 CUSHION = 10  # BB
-SUMMARY_DIR = './results'
-LOG_FILE = './results/log_sim_bb'
+SUMMARY_DIR = './results/bba/'
+LOG_FILE = './results/bba/log_sim_bb'
 # log in format of time_stamp bit_rate buffer_size rebuffer_time chunk_size download_time reward
 
 
@@ -49,7 +49,7 @@ def main():
         # this is to make the framework similar to the real
         delay, sleep_time, buffer_size, rebuf, \
         video_chunk_size, next_video_chunk_sizes, \
-        end_of_video, video_chunk_remain, future_weights = \
+        end_of_video, video_chunk_remain, future_weights, do_rebuffer = \
             net_env.get_video_chunk(bit_rate)
 
         time_stamp += delay  # in ms
@@ -71,7 +71,8 @@ def main():
                        str(rebuf) + '\t' +
                        str(video_chunk_size) + '\t' +
                        str(delay) + '\t' +
-                       str(reward) + '\n')
+                       str(reward) + '\t' +
+                       str(do_rebuffer) + '\n')
         log_file.flush()
 
         if buffer_size < RESEVOIR:

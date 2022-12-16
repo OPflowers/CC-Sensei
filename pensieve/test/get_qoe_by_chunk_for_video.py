@@ -64,7 +64,27 @@ def get_qoe_by_chunks(video_no):
     chunks = np.abs((chunks - np.asarray(video_qoe_phase_1)[qoe_ref_index][0]))
     return chunks
 
+# gets weights for chunks, not evenly spaced (some chunks = 4s, some chunks = 1s)
+def get_weights_for_chunks(video_no):
+    video_index_phase_1 = df_index_phase_1.iloc[video_no]
+    video_qoe_phase_1 = df_qoe_phase_1.iloc[video_no]
 
+    phase_2_chunk = video_index_phase_1['Phase 2 Chunk']
+    name = video_names[video_no]
+    weights = []
+    with open(weights_path, 'r') as f:
+        for line in f:
+            line_parsed = line[:-2].split(" ")
+            if line_parsed[0] == name:
+                for i in range(1, len(line_parsed)):
+                    if i == phase_2_chunk:
+                        weights.append(float(line_parsed[i]))
+                    else:
+                        weights.append(float(line_parsed[i]))
+    return weights
+
+
+# get weights for video, chunks evenly split (all chunks = 1s. uses same weight if chunk is large)
 def get_weights(video_no):
     video_index_phase_1 = df_index_phase_1.iloc[video_no]
     video_qoe_phase_1 = df_qoe_phase_1.iloc[video_no]

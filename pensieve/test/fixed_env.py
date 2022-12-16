@@ -17,6 +17,7 @@ PACKET_SIZE = 1500  # bytes
 VIDEO_SIZE_FILE = './video_size_'
 
 VIDEO_NO = int(os.environ['VIDEO_NO'])
+TEST = os.environ['TEST'].lower()
 CHUNK_QOE = get_qoe_by_chunk_for_video.get_weights(VIDEO_NO)
 # print(CHUNK_QOE)
 HORIZON = 4
@@ -94,8 +95,10 @@ class Environment:
         delay += LINK_RTT
 
         # rebuffer time
-        # rebuf = np.maximum(delay - self.buffer_size, 0.0)
-        rebuf = np.random.randint(3, size=1)[0]*1000
+        if TEST == 'sensei':
+            rebuf = np.random.randint(3, size=1)[0] * 1000
+        else:
+            rebuf = np.maximum(delay - self.buffer_size, 0.0)
 
         # update the buffer
         self.buffer_size = np.maximum(self.buffer_size - delay, 0.0)
@@ -134,14 +137,17 @@ class Environment:
         # Note: in old version of dash the lowest buffer is 0.
         # In the new version the buffer always have at least
         # one chunk of video
+
         return_buffer_size = self.buffer_size
         lookahead_chunks = min(HORIZON, TOTAL_VIDEO_CHUNCK - self.video_chunk_counter)
         future_chunk_weight = np.mean(CHUNK_QOE[self.video_chunk_counter:self.video_chunk_counter + lookahead_chunks])
         lookahead_buffer = min(1, TOTAL_VIDEO_CHUNCK - self.video_chunk_counter)
+
         if CHUNK_QOE[self.video_chunk_counter + lookahead_buffer] > CHUNK_QOE[self.video_chunk_counter]:
             do_rebuffer = 1
         else:
             do_rebuffer = 0
+
         self.video_chunk_counter += 1
         video_chunk_remain = TOTAL_VIDEO_CHUNCK - self.video_chunk_counter
 
