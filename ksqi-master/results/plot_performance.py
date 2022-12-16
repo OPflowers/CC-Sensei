@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from pensieve.test.get_qoe_by_chunk_for_video import get_weights_for_chunks
+from get_qoe_by_chunk_for_video import get_weights_for_chunks
 
 bba_traces = "../../pensieve/test/results/bba/"
 pensieve_traces = "../../pensieve/test/results/pensieve/"
