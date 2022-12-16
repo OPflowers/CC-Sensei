@@ -7,6 +7,7 @@ class PLCC(Criterion):
         super().__init__(version=version)
 
     def __call__(self, obj_score, sbj_score):
+        print(obj_score, sbj_score)
         obj_score = self._nonlinear_mapping(obj_score, sbj_score)
         # print(obj_score)
         sbj_score = [float(x) for x in sbj_score]

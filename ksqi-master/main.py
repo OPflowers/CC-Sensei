@@ -1,4 +1,5 @@
 import argparse
+import os
 from config import cfg, cfg_from_list
 from pysqoe.models import train
 from pysqoe.datasets import get_dataset
@@ -15,6 +16,8 @@ python main.py --set DATASET LIVE-NFLX-II INPUT_DIR data/LIVE-NFLX-II MODEL FTW:
 python main.py --set MODE parse DATASET WaterlooSQoE-I INPUT_DIR data/WaterlooSQoE-I
 """
 
+
+q_i_logs = "pysqoe/models/sensei/q_i_logs.txt"
 def parse_args():
     parser = argparse.ArgumentParser(description='PySQoE: A python library to benchmark objective QoE models for streaming videos')
     parser.add_argument('--set', dest='set_cfgs',
@@ -24,6 +27,9 @@ def parse_args():
     return arg
 
 def main():
+    if os.path.exists(q_i_logs):
+        with open(q_i_logs, 'w') as f:
+            f.close()
     if cfg.MODE == 'train':
         dataset_s = get_dataset(dataset=cfg.TRAINING_DATASET_S, root_dir=cfg.DATASET_S_ROOT, download=cfg.DOWNLOAD)
         dataset_a = get_dataset(dataset=cfg.TRAINING_DATASET_A, root_dir=cfg.DATASET_A_ROOT, download=cfg.DOWNLOAD)

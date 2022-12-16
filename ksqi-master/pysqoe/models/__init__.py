@@ -21,6 +21,8 @@ def get_qoe_model(model_name):
         model = P1203()
     elif model_name == 'VideoATLAS':
         model = VideoATLAS()
+    elif model_name == 'SENSEI_KSQI':
+        model = SENSEI_KSQI()
     elif model_name == 'KSQI':
         model = KSQI()
     elif model_name == 'VsQMDASH':
@@ -58,3 +60,5 @@ from pysqoe.models.sqi import SQI
 from pysqoe.models.p1203 import P1203
 from pysqoe.models.videoatlas import VideoATLAS
 from pysqoe.models.ksqi import KSQI
+from pysqoe.models.sensei import SENSEI_KSQI
+

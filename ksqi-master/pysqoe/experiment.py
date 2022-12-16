@@ -4,6 +4,8 @@ import pandas as pd
 from pysqoe.models import get_qoe_model
 from pysqoe.evaluation import get_criterion, get_comparison_method
 
+ABR = os.environ['ABR'].lower()
+VIDEO_NO = int(os.environ['VIDEO_NO'])
 
 class Experiment(object):
     def __init__(self, models, criteria, model_comparison=None, plot=True):
@@ -20,8 +22,17 @@ class Experiment(object):
         result_dir = os.path.join(self.result_dir, dataset.name)
         if not os.path.exists(result_dir):
             os.makedirs(result_dir)
-        score_out = os.path.join(result_dir, 'scores.csv')
-        criteria_out = os.path.join(result_dir, 'performance.csv')
+        abr = ""
+        if ABR == 'sensei':
+            abr = "sensei_video" + str(VIDEO_NO) + "_"
+        elif ABR == 'sensei-all':
+            abr = 'sensei-all_'
+        elif ABR == 'pensieve':
+            abr = "pensieve_"
+        else:
+            abr = "bb_"
+        score_out = os.path.join(result_dir, abr + 'scores.csv')
+        criteria_out = os.path.join(result_dir, abr + 'performance.csv')
         mc_out = [os.path.join(result_dir, '%s.csv' % n) for n in self.comparison_names]
         
         # perform objective QoE assessment

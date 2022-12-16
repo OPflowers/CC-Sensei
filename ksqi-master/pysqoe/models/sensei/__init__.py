@@ -6,6 +6,9 @@ from scipy.sparse import csc_matrix
 from pysqoe.models import QoeModel
 from pprint import pprint
 
+from pysqoe import get_qoe_by_chunk_for_video
+
+weights_log_file = "./pysqoe/models/sensei/weights.txt"
 
 def osqp_solve_qp(P, q, G=None, h=None, B=None, c=None, initvals=None):
     """
@@ -61,8 +64,10 @@ def osqp_solve_qp(P, q, G=None, h=None, B=None, c=None, initvals=None):
     #     print("OSQP exited with status '%s'" % res.info.status)
     return res.x
 
-class KSQI(QoeModel):
-    r"""
+class SENSEI_KSQI(QoeModel):
+    "Modified version of KSQI to weight for SENSEI's implementation"
+
+    """
     This is an implementation of the objective QoE model described in [R1].
 
     [R1]: Z. Duanmu, K. Zeng, K. Ma, A. Rehman, and Z. Wang, ``A knowledge-driven
@@ -73,6 +78,7 @@ class KSQI(QoeModel):
           no. 1, pp. 154-166, Feb. 2017.
     """
     def __init__(self, num_t=10, num_p=10, lbd=1):
+
         model_dir = os.path.dirname(os.path.realpath(__file__))
         self.s_model_txt = os.path.join(model_dir, 's_model.txt')
         self.a_model_txt = os.path.join(model_dir, 'a_model.txt')
@@ -109,16 +115,36 @@ class KSQI(QoeModel):
         self.num_t = self.s_model.shape[1]
         self.p_size = self.p_range / self.num_p
 
+        # read weights
+        video_weights = []
+        with open(weights_log_file, 'r') as f:
+            # determine which set of weights to use
+            video_name = streaming_video.streaming_log
+            for line in f:
+                line_parsed = line[:-2].split(" ")  # remove newline character and space that comes with it
+                # print(line_parsed)
+                if line_parsed[0] in video_name:
+                    # print(line_parsed[0])
+                    for i in range(1, len(line_parsed)):
+                        video_weights.append(float(line_parsed[i]))
+        # print(video_weights)
         q = []
         p = np.array(streaming_video.data['vmaf'])
         t = np.array(streaming_video.data['rebuffering_duration'])
         p_pre = p[0]
         for i, p_cur in enumerate(p):
-            q_i = self._compute_segment_qoe(p_pre, p_cur, t[i], i==0)
-            print(q_i)
+
+            q_i = self._compute_segment_qoe(p_pre, p_cur, t[i], i == 0)
+            # print("-----")
+            # print("q_i orig: ", q_i,)
+            # print("chunk sensitivity: ", CHUNK_SENS[i])
+            # print("q_i original: ", q_i, "q_i new: ", q_i * video_weights[i])
+            q_i *= video_weights[i]
+            # print("q_i new: ", q_i)
+
             q.append(q_i)
             p_pre = p_cur
-        print("done w video")
+        # print("done w video")
         qoe = np.mean(np.asarray(q))
         qoe = np.maximum(np.minimum(qoe, 100), 0)
         return qoe

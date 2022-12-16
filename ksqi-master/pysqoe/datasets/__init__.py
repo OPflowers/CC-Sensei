@@ -24,6 +24,8 @@ def get_dataset(dataset, root_dir, download=True, version='feature'):
         dataset = LIVENFLX2(root_dir=root_dir, download=download, version=version)
     elif dataset == 'WaterlooSQoE-PC':
         dataset = WaterlooSQoEPC(root_dir=root_dir, download=download, version=version)
+    elif dataset == 'custom_data':
+        dataset = CustomData(root_dir=root_dir, download=False, version='feature')
     else:
         raise NotImplementedError('Invalid dataset %s' % dataset)
 
@@ -352,3 +354,4 @@ from pysqoe.datasets.waterloo_sqoe4 import WaterlooSQoE4
 from pysqoe.datasets.live_nflx1 import LIVENFLX1
 from pysqoe.datasets.live_nflx2 import LIVENFLX2
 from pysqoe.datasets.waterloo_sqoe_pc import WaterlooSQoEPC
+from pysqoe.datasets.custom_data import CustomData

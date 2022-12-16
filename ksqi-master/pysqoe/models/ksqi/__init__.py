@@ -6,6 +6,7 @@ from scipy.sparse import csc_matrix
 from pysqoe.models import QoeModel
 from pprint import pprint
 
+q_i_log_file = "pysqoe/models/sensei/q_i_logs.txt"
 
 def osqp_solve_qp(P, q, G=None, h=None, B=None, c=None, initvals=None):
     """
@@ -73,6 +74,7 @@ class KSQI(QoeModel):
           no. 1, pp. 154-166, Feb. 2017.
     """
     def __init__(self, num_t=10, num_p=10, lbd=1):
+
         model_dir = os.path.dirname(os.path.realpath(__file__))
         self.s_model_txt = os.path.join(model_dir, 's_model.txt')
         self.a_model_txt = os.path.join(model_dir, 'a_model.txt')
@@ -113,12 +115,21 @@ class KSQI(QoeModel):
         p = np.array(streaming_video.data['vmaf'])
         t = np.array(streaming_video.data['rebuffering_duration'])
         p_pre = p[0]
+
+        q_i_array = [streaming_video.streaming_log]
+        q_i_array.append(streaming_video.data['representation_index'][0])
         for i, p_cur in enumerate(p):
             q_i = self._compute_segment_qoe(p_pre, p_cur, t[i], i==0)
-            print(q_i)
+            # print(q_i)
             q.append(q_i)
             p_pre = p_cur
-        print("done w video")
+            q_i_array.append(q_i)
+
+        if not os.path.exists(q_i_log_file):
+            file = open(q_i_log_file, 'w+')
+        with open(q_i_log_file, 'a') as f:
+            f.write(str(q_i_array))
+            f.write("\n")
         qoe = np.mean(np.asarray(q))
         qoe = np.maximum(np.minimum(qoe, 100), 0)
         return qoe
