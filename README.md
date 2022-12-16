@@ -8,8 +8,7 @@ For our plots in paper, run (with an editor that can open matplotlib graphs like
 
 The videos for the project (original and augmented) can be found in this Google Drive:
 - https://drive.google.com/drive/u/0/folders/1vSZHNcQ0cvHzoAam_HV_3380Caa7WdRE
-- place them inside their respective folders (phase 1 and phase 2) inside "Augmented Videos"
-
+- place them inside their respective folders ("Augmented Videos/Phase 1", "Augmented Videos/Phase 2", "Youtube Videos/Youtube UGC Videos Raw")
 In this project, we test the following in SENSEI's methodology:
 - SENSEI's weighted QoE modeling improvements, comparing to KSQI, P.1203
     - https://github.com/zduanmu/ksqi
